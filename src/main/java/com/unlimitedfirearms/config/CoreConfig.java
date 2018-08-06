@@ -1,16 +1,11 @@
 package com.unlimitedfirearms.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
+import com.unlimitedfirearms.core.BukkitCore;
+import com.unlimitedfirearms.core.CommonCore.ServerType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.unlimitedfirearms.core.BukkitCore;
-import com.unlimitedfirearms.core.CommonCore.ServerType;
+import java.io.*;
 
 public class CoreConfig {
 	private static ServerType server;

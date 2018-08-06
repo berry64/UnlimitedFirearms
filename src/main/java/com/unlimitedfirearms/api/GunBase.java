@@ -1,5 +1,8 @@
 package com.unlimitedfirearms.api;
 
-public class GunBase {
+import org.bukkit.entity.Player;
 
+public abstract class GunBase {
+
+    public abstract boolean fire(Player player);
 }
