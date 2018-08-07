@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public abstract class GunObject {
-    ItemStack item;
+    private ItemStack item;
 
     public GunObject(){
         item = new ItemStack(Material.IRON_HOE);

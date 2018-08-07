@@ -6,4 +6,4 @@ author: [berry64,LocyDragon]
 commands:
   unlimitedfirearms:
     description: main command for UnlimitedFirearms
-    aliases: [ufa, uf]
+    aliases: [ufa, uf, unlimitedfirearm]
