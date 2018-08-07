@@ -2,6 +2,7 @@ package com.unlimitedfirearms.config;
 
 import com.unlimitedfirearms.core.BukkitCore;
 import com.unlimitedfirearms.core.CommonCore.ServerType;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CoreConfig {
 	private static ServerType server;
 	private static YamlConfiguration lang;
-	private static ConcurrentHashMap<String, YamlConfiguration> loadedWeapons = new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<String, ConfigurationSection> loadedWeapons = new ConcurrentHashMap<>();
 	private static File weapons;
 
 	/**
@@ -42,17 +43,39 @@ public class CoreConfig {
 			BukkitCore.instance.reloadConfig();
 		}
 
-		f = new File(folder, "lang.yml");
-		lang = loadCustomConf(f);
+		lang = loadCustomConf("lang.yml");
 
 		weapons = new File(folder+"/weapons/");
 		if((!weapons.exists())&& (!weapons.mkdirs()))
 			throw new FileAlreadyExistsException("Cannot create weapons folder");
+
+		//load weapons
+		for (File yml: weapons.listFiles()) {
+			if(yml.getName().endsWith(".yml") || yml.getName().endsWith(".ufa")){
+				try {
+					YamlConfiguration y = YamlConfiguration.loadConfiguration(
+							new InputStreamReader(new FileInputStream(yml), "utf-8"));
+					for(String key : y.getKeys(false)){
+						if(loadedWeapons.containsKey(key)){
+							BukkitCore.instance.getLogger().warning("Ignoring "+yml.getName()+"'s "+key+" because another weapon with same key is already loaded");
+							continue;
+						}
+						ConfigurationSection cs = y.getConfigurationSection(key);
+						loadedWeapons.put(key, cs);
+						//TODO WeaponsRegistry.registerWeapon();
+					}
+				} catch (UnsupportedEncodingException | FileNotFoundException e) {
+					BukkitCore.instance.getLogger().severe("Cannot load weapon file "+yml.getName());
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
-	private static YamlConfiguration loadCustomConf(File f) {
+	private static YamlConfiguration loadCustomConf(String filename) {
+		File f = new File(BukkitCore.instance.getDataFolder(), filename);
 		if (!f.exists()) {
-			BukkitCore.instance.saveResource("lang.yml", true);
+			BukkitCore.instance.saveResource(filename, true);
 		}
 		try {
 			return YamlConfiguration.loadConfiguration(
@@ -102,19 +125,11 @@ public class CoreConfig {
 		return weapons;
 	}
 
-	public static YamlConfiguration getWeaponFile(String weaponfile){
-		if(loadedWeapons.keySet().contains(weaponfile))
-			return loadedWeapons.get(weaponfile);
+	public static ConfigurationSection getWeaponConfig(String weaponid){
+		if(loadedWeapons.keySet().contains(weaponid))
+			return loadedWeapons.get(weaponid);
 
-		File f = new File(weapons, weaponfile+".yml");
-		if(!f.exists()) {
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return YamlConfiguration.loadConfiguration(f);
+		return null;
 	}
 
 
