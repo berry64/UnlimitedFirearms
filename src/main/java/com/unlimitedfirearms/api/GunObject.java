@@ -1,26 +1,56 @@
 package com.unlimitedfirearms.api;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class GunObject {
-    public GunObject(ConfigurationSection cfg){
-        String type = cfg.getString("type");
+	public String type = "assultrifle";
+	public String name = "NORMAL_NAME";
 
-    }
+	private GunObject() {
+	}
 
-   /* enum AttatchmentLocation{
-        RAIL,
-        SIGHT,
-        BARREL,
-        LOWER_RECIEVER
-    }
+	public GunObject(String type, String name) {
+		this.type = type;
+		this.name = name;
+	}
 
-    public abstract boolean addAttatchment(AttatchmentLocation slot, AttatchmentObject obj);
-*/
-    public abstract ItemStack getItemStack();
+	public GunObject(ConfigurationSection section) {
+		this.type = section.getString("type");
+		this.name = section.getString("name");
+	}
 
-    public abstract boolean fire(Player player);
+	public String getName() {
+		return name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public GunObject setType(String type) {
+		this.type = type;
+		return this;
+	}
+
+	public GunObject setName(String name) {
+		this.name = name;
+		return this;
+	}
+
+	public String serialize() {
+		return JSONObject.toJSONString(this);
+	}
+
+	public static GunObject fromJSON(String json) {
+		return (GunObject) JSON.parseObject(json, GunObject.class);
+	}
+
+	public abstract ItemStack getItemStack();
+
+	public abstract boolean fire(Player player);
 
 }

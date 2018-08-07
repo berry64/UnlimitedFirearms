@@ -1,5 +1,8 @@
 package com.unlimitedfirearms.config;
 
+import com.unlimitedfirearms.api.GunObject;
+import com.unlimitedfirearms.cache.GunObjectCache;
+import com.unlimitedfirearms.core.BaseGunObject;
 import com.unlimitedfirearms.core.BukkitCore;
 import com.unlimitedfirearms.core.CommonCore.ServerType;
 import org.bukkit.configuration.ConfigurationSection;
@@ -61,8 +64,7 @@ public class CoreConfig {
 							continue;
 						}
 						ConfigurationSection cs = y.getConfigurationSection(key);
-						loadedWeapons.put(key, cs);
-						//TODO WeaponsRegistry.registerWeapon();
+						GunObjectCache.putObject(cs.getString("name"), new BaseGunObject(cs));
 					}
 				} catch (UnsupportedEncodingException | FileNotFoundException e) {
 					BukkitCore.instance.getLogger().severe("Cannot load weapon file "+yml.getName());
