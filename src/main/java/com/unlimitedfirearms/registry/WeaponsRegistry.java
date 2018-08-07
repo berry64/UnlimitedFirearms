@@ -44,9 +44,9 @@ public class WeaponsRegistry {
     }
 
     /**
-     * Tries to look for
-     * @param name
-     * @return
+     * Tries to look for the category with the given name/alias
+     * @param name the name/alias, not case-sensitive
+     * @return the Category;
      */
     public static Class<? extends  GunObject> getCategoryByName(String name){
         for(Map.Entry<String[], Class<?extends GunObject>> e: categories.entrySet()){
