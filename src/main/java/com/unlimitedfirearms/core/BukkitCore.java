@@ -24,4 +24,8 @@ public class BukkitCore extends JavaPlugin {
 		this.getServer().getPluginCommand("unlimitedfirearms").setExecutor(new UnlimitedFirearmsCommand());
 		this.getServer().getPluginManager().registerEvents(new BukkitListenerCore(), this);
 	}
+
+	public void loadDefaultWeapons(){
+		
+	}
 }
