@@ -41,14 +41,6 @@ public abstract class GunObject {
 		return this;
 	}
 
-	public String serialize() {
-		return JSONObject.toJSONString(this);
-	}
-
-	public static GunObject fromJSON(String json) {
-		return (GunObject) JSON.parseObject(json, GunObject.class);
-	}
-
 	public abstract ItemStack getItemStack();
 
 	public abstract boolean fire(Player player);

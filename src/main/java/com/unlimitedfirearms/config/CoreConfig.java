@@ -5,6 +5,7 @@ import com.unlimitedfirearms.cache.GunObjectCache;
 import com.unlimitedfirearms.core.BaseGunObject;
 import com.unlimitedfirearms.core.BukkitCore;
 import com.unlimitedfirearms.core.CommonCore.ServerType;
+import com.unlimitedfirearms.registry.WeaponsRegistry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,26 +49,33 @@ public class CoreConfig {
 
 		lang = loadCustomConf("lang.yml");
 
-		weapons = new File(folder+"/weapons/");
-		if((!weapons.exists())&& (!weapons.mkdirs()))
+		weapons = new File(folder + "/weapons/");
+		if ((!weapons.exists()) && (!weapons.mkdirs()))
 			throw new FileAlreadyExistsException("Cannot create weapons folder");
 
 		//load weapons
-		for (File yml: weapons.listFiles()) {
-			if(yml.getName().endsWith(".yml") || yml.getName().endsWith(".ufa")){
+		for (File yml : weapons.listFiles()) {
+			if (yml.getName().endsWith(".yml") || yml.getName().endsWith(".ufa")) {
 				try {
 					YamlConfiguration y = YamlConfiguration.loadConfiguration(
 							new InputStreamReader(new FileInputStream(yml), "utf-8"));
-					for(String key : y.getKeys(false)){
-						if(loadedWeapons.containsKey(key)){
-							BukkitCore.instance.getLogger().warning("Ignoring "+yml.getName()+"'s "+key+" because another weapon with same key is already loaded");
+					for (String key : y.getKeys(false)) {
+						if (loadedWeapons.containsKey(key)) {
+							BukkitCore.instance.getLogger().warning("Ignoring " + yml.getName() + "'s " + key + " because another weapon with same key is already loaded");
 							continue;
 						}
 						ConfigurationSection cs = y.getConfigurationSection(key);
-						GunObjectCache.putObject(cs.getString("name"), new BaseGunObject(cs));
+						String type = cs.getString("type");
+						Class<? extends Object> objectClass = WeaponsRegistry.getCategoryByName(type);
+						try {
+							GunObject gunObj = (GunObject) objectClass.getConstructor(ConfigurationSection.class).newInstance(cs);
+							GunObjectCache.putObject(cs.getString("name"), gunObj);
+						} catch (Exception exc) {
+							exc.printStackTrace();
+						}
 					}
 				} catch (UnsupportedEncodingException | FileNotFoundException e) {
-					BukkitCore.instance.getLogger().severe("Cannot load weapon file "+yml.getName());
+					BukkitCore.instance.getLogger().severe("Cannot load weapon file " + yml.getName());
 					e.printStackTrace();
 				}
 			}
@@ -121,14 +129,15 @@ public class CoreConfig {
 	/**
 	 * Gets the "./weapons/" folder as File
 	 * returns null if is not a folder
+	 *
 	 * @return the folder
 	 */
-	public static File getWeaponsFolder(){
+	public static File getWeaponsFolder() {
 		return weapons;
 	}
 
-	public static ConfigurationSection getWeaponConfig(String weaponid){
-		if(loadedWeapons.keySet().contains(weaponid))
+	public static ConfigurationSection getWeaponConfig(String weaponid) {
+		if (loadedWeapons.keySet().contains(weaponid))
 			return loadedWeapons.get(weaponid);
 
 		return null;
