@@ -3,6 +3,7 @@ package com.unlimitedfirearms.registry;
 import com.unlimitedfirearms.api.GunObject;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WeaponsRegistry {
@@ -34,5 +35,29 @@ public class WeaponsRegistry {
             return false;
         categories.put(id, clz);
         return true;
+    }
+
+    /**
+     * Gets the GunObject by an ItemStack from registry, ignores amount
+     * returns null if no corresponding GunObject is found
+     * @param itemStack the ItemStack to look for
+     * @return the GunObject corresponding with the ItemStack
+     */
+    public static GunObject getGunByItem(ItemStack itemStack){
+        for(Map.Entry<ItemStack, GunObject> e: weaponsRegistry.entrySet()){
+            if(e.getKey().isSimilar(itemStack)){
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+    /**
+     * Gets the GunObject by an ItemStack from registry and looks for the exact match
+     * returns null if no corresponding GunObject is found
+     * @param itemStack the ItemStack to look for
+     * @return the GunObject corresponding with the ItemStack
+     */
+    public static GunObject getGunByItemExact(ItemStack itemStack){
+        return weaponsRegistry.get(itemStack);
     }
 }
