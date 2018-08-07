@@ -56,10 +56,11 @@ public class CoreConfig {
 					YamlConfiguration y = YamlConfiguration.loadConfiguration(
 							new InputStreamReader(new FileInputStream(yml), "utf-8"));
 					for(String key : y.getKeys(false)){
-						ConfigurationSection cs = y.getConfigurationSection(key);
-						if(!loadedWeapons.containsKey(key)){
-							//TODO GunObject
+						if(loadedWeapons.containsKey(key)){
+							BukkitCore.instance.getLogger().warning("Ignoring "+yml.getName()+"'s "+key+" because another weapon with same key is already loaded");
+							continue;
 						}
+						ConfigurationSection cs = y.getConfigurationSection(key);
 						loadedWeapons.put(key, cs);
 						//TODO WeaponsRegistry.registerWeapon();
 					}

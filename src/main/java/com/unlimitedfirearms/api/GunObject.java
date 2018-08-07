@@ -5,12 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class GunObject {
-    public GunObject(){
-    }
+    public GunObject(ConfigurationSection cfg){
 
-
-    public static GunObject deserialize(ConfigurationSection config) {
-        return null;
     }
 
     public abstract ItemStack getItemStack();

@@ -43,6 +43,11 @@ public class WeaponsRegistry {
         return true;
     }
 
+    /**
+     * Tries to look for
+     * @param name
+     * @return
+     */
     public static Class<? extends  GunObject> getCategoryByName(String name){
         for(Map.Entry<String[], Class<?extends GunObject>> e: categories.entrySet()){
             for(String s : e.getKey()){
