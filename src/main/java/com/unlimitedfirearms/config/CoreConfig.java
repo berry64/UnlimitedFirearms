@@ -7,10 +7,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CoreConfig {
 	private static ServerType server;
 	private static YamlConfiguration lang;
+	private static ConcurrentHashMap<String, YamlConfiguration> loadedWeapons = new ConcurrentHashMap<>();
+	private static File weapons;
 
 	/**
 	 * Starts to load Configuration for UnlimitedFirearms
@@ -42,8 +45,8 @@ public class CoreConfig {
 		f = new File(folder, "lang.yml");
 		lang = loadCustomConf(f);
 
-		f = new File(folder+"/weapons/");
-		if((!f.exists())&& (!f.mkdirs()))
+		weapons = new File(folder+"/weapons/");
+		if((!weapons.exists())&& (!weapons.mkdirs()))
 			throw new FileAlreadyExistsException("Cannot create weapons folder");
 	}
 
@@ -89,6 +92,31 @@ public class CoreConfig {
 	public static YamlConfiguration getLang() {
 		return lang;
 	}
+
+	/**
+	 * Gets the "./weapons/" folder as File
+	 * returns null if is not a folder
+	 * @return the folder
+	 */
+	public static File getWeaponsFolder(){
+		return weapons;
+	}
+
+	public static YamlConfiguration getWeaponFile(String weaponfile){
+		if(loadedWeapons.keySet().contains(weaponfile))
+			return loadedWeapons.get(weaponfile);
+
+		File f = new File(weapons, weaponfile+".yml");
+		if(!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return YamlConfiguration.loadConfiguration(f);
+	}
+
 
 	/**
 	 * Returns the type of server that the CoreConfig is currently running with

@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="UnlimitedFirearms" target="7" />
+      <module name="UnlimitedFirearms" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
