@@ -1,0 +1,5 @@
+name: UnlimitedFireArms
+main: com.unlimitedfirearms.core.BukkitCore
+version: 1.0.0
+author: [Berry64,LocyDragon]
+commands:
