@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WeaponsRegistry {
-    private static ConcurrentHashMap<String, Class<? extends GunObject>> categories = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String[], Class<? extends GunObject>> categories = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<ItemStack, GunObject> weaponsRegistry = new ConcurrentHashMap<>();
 
     /**
@@ -26,17 +26,33 @@ public class WeaponsRegistry {
     /**
      * Registers a specific category by a String identifier
      * the identifier is used in configuration to define which class it should use
-     * @param id the identifier
      * @param clz the class
+     * @param names the alternative names that the weapon can be written as in type
      * @return whether the registration is successful
      */
-    public static boolean registerCategory(String id, Class<? extends  GunObject> clz){
-        if(categories.containsKey(id))
-            return false;
-        categories.put(id, clz);
+    public static boolean registerCategory(Class<? extends  GunObject> clz, String[] names){
+        for(String[] name : categories.keySet()){
+            for(String s : name){
+                for(String na : names){
+                    if(s.equalsIgnoreCase(na))
+                        return false;
+                }
+            }
+        }
+        categories.put(names, clz);
         return true;
     }
 
+    public static Class<? extends  GunObject> getCategoryByName(String name){
+        for(Map.Entry<String[], Class<?extends GunObject>> e: categories.entrySet()){
+            for(String s : e.getKey()){
+                if (s.equalsIgnoreCase(name)){
+                    return e.getValue();
+                }
+            }
+        }
+        return null;
+    }
     /**
      * Gets the GunObject by an ItemStack from registry, ignores amount
      * returns null if no corresponding GunObject is found
