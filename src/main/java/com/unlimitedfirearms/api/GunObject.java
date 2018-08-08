@@ -1,26 +1,30 @@
 package com.unlimitedfirearms.api;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public abstract class GunObject {
-	public String type = "assultrifle";
-	public String name = "NORMAL_NAME";
+	protected ConcurrentHashMap<Player, Long> fireCD = new ConcurrentHashMap<>();
 
-	private GunObject() {
-	}
-
-	public GunObject(String type, String name) {
-		this.type = type;
-		this.name = name;
-	}
+	protected String type = "DEFAULT_TYPE";
+	protected String name = "DEFAULT_NAME";
 
 	public GunObject(ConfigurationSection section) {
 		this.type = section.getString("type");
-		this.name = section.getString("name");
+	}
+	public GunObject(ConfigurationSection section, String name){
+		this(section);
+		this.name = name;
+	}
+
+	public void trigger(Player p){
+		if(fireCD.containsKey(p) && Math.abs(System.currentTimeMillis() - fireCD.get(p)) > getFireDelay() && canFire(p)){
+			fire(p);
+		}
 	}
 
 	public String getName() {
@@ -31,17 +35,17 @@ public abstract class GunObject {
 		return type;
 	}
 
-	public GunObject setType(String type) {
-		this.type = type;
-		return this;
+	public abstract ConfigurationSection getConfig();
+
+	public static GunObject fromJSON(String json) {
+		return JSON.parseObject(json, GunObject.class);
 	}
 
-	public GunObject setName(String name) {
-		this.name = name;
-		return this;
-	}
+	protected abstract long getFireDelay();
 
 	public abstract ItemStack getItemStack();
+
+	public abstract boolean canFire(Player player);
 
 	public abstract boolean fire(Player player);
 

@@ -3,7 +3,6 @@ package com.unlimitedfirearms.registry;
 import com.unlimitedfirearms.api.GunObject;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -49,10 +48,11 @@ public class WeaponsRegistry {
 	}
 
 	/**
-	 * Tries to look for
+	 * Tries to look for a category class by its name/aliases
+	 * returns null if no category class is found
 	 *
-	 * @param name
-	 * @return
+	 * @param name the name to look for
+	 * @return the Class, if exists
 	 */
 	public static Class<? extends GunObject> getCategoryByName(String name) {
 		for (Map.Entry<String[], Class<? extends GunObject>> e : categories.entrySet()) {
@@ -77,6 +77,21 @@ public class WeaponsRegistry {
 			if (e.getKey().isSimilar(itemStack)) {
 				return e.getValue();
 			}
+		}
+		return null;
+	}
+
+	/**
+	 * Attempts to retrieve a GunObject by its defined ID
+	 * returns null if no matching is found
+	 *
+	 * @param name The weaponID, not case-sensitive
+	 * @return the GunObject
+	 */
+	public static GunObject getGunByName(String name){
+		for(Map.Entry<ItemStack, GunObject> e : weaponsRegistry.entrySet()){
+			if(e.getValue().getName().equalsIgnoreCase(name))
+				return e.getValue();
 		}
 		return null;
 	}

@@ -3,7 +3,9 @@ package com.unlimitedfirearms.core;
 import com.unlimitedfirearms.config.CoreConfig;
 import com.unlimitedfirearms.core.CommonCore.ServerType;
 import com.unlimitedfirearms.core.commands.UnlimitedFirearmsCommand;
+import com.unlimitedfirearms.core.weapons.AssultRifle;
 import com.unlimitedfirearms.listeners.BukkitListenerCore;
+import com.unlimitedfirearms.registry.WeaponsRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,9 +25,10 @@ public class BukkitCore extends JavaPlugin {
 		}
 		this.getServer().getPluginCommand("unlimitedfirearms").setExecutor(new UnlimitedFirearmsCommand());
 		this.getServer().getPluginManager().registerEvents(new BukkitListenerCore(), this);
+		loadDefaultWeapons();
 	}
 
-	public void loadDefaultWeapons(){
-		
+	private void loadDefaultWeapons(){
+		WeaponsRegistry.registerCategory(AssultRifle.class, new String[]{"assultrifle", "assult-rifle"});
 	}
 }
