@@ -1,10 +1,15 @@
 package com.unlimitedfirearms.packets;
 
-import org.bukkit.entity.Player;
-
 public class Vibration {
+    public static void init(){
 
+    }
+    public  enum VibrationType{
+        HORIZONTAL,
+        VERTICAL
+    }
 
-    public static void vibrate(Player player){
+    public void Vibration(int frequency, double range, VibrationType type){
+
     }
 }
